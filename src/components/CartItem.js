@@ -3,11 +3,10 @@ import Button from './Button'
 import {minusCartItem, plusCartItem, removeCartItem} from '../redux/actions/cart'
 import {connect} from 'react-redux'
 
-const CartItem = ({ params,  totalCount, onRemove, onMinus, onPlus }) => {
+const CartItem = (props) => {
 
-  console.log('params', params)
-  const onRemoveItem = (id) => {
-    if (window.confirm('Вы действительно хотите удалить?')) { onRemove(id) }
+  const onRemoveItem = () => {
+    if (window.confirm('Вы действительно хотите удалить?')) { props.onRemove(props.item) }
   }
 
   return (
@@ -20,14 +19,14 @@ const CartItem = ({ params,  totalCount, onRemove, onMinus, onPlus }) => {
         />
       </div>
       <div className="cart__item-info">
-        <h3>{params.name}</h3>
+        <h3>{props.item.params.name}</h3>
         <p>
-          {params.type} тесто, {params.size} см.
+          {props.item.params.type} тесто, {props.item.params.size} см.
         </p>
       </div>
       <div className="cart__item-count">
         <div
-          onClick={() => onMinus(params.id)}
+          onClick={() => props.onMinus(props.item)}
           className="button button--outline button--circle cart__item-count-minus">
           <svg
             width="10"
@@ -45,9 +44,9 @@ const CartItem = ({ params,  totalCount, onRemove, onMinus, onPlus }) => {
             />
           </svg>
         </div>
-        <b>{totalCount}</b>
+        <b>{props.item.count}</b>
         <div
-          onClick={() => onPlus(params.id)}
+          onClick={() => props.onPlus(props.item)}
           className="button button--outline button--circle cart__item-count-plus">
           <svg
             width="10"
@@ -67,7 +66,7 @@ const CartItem = ({ params,  totalCount, onRemove, onMinus, onPlus }) => {
         </div>
       </div>
       <div className="cart__item-price">
-        <b>{params.totalPrice} ₽</b>
+        <b>{props.item.count * props.item.params.price} ₽</b>
       </div>
       <div className="cart__item-remove">
         <Button onClick={onRemoveItem} className="button--circle" outline>
@@ -94,15 +93,15 @@ const CartItem = ({ params,  totalCount, onRemove, onMinus, onPlus }) => {
 
 const mapStateToProps = state => {
   return {
-
+    items: state.cart.items
   }
 }
 
 const dispatchToProps = dispatch => {
   return {
-    onRemove: id => dispatch(removeCartItem(id)),
-    onPlus: id => dispatch(plusCartItem(id)),
-    onMinus: id => dispatch(minusCartItem(id)),
+    onRemove: item => dispatch(removeCartItem(item)),
+    onPlus: item => dispatch(plusCartItem(item)),
+    onMinus: item => dispatch(minusCartItem(item)),
   }
 }
 

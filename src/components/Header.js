@@ -5,7 +5,6 @@ import {connect} from 'react-redux'
 import logoSvg from '../assets/img/pizza-logo.svg'
 import Button from './Button'
 
-
 function Header(props) {
 
 	return (
@@ -21,7 +20,7 @@ function Header(props) {
 						</div>
 					</div>
 				</Link>
-				<Link to="/cart" >
+				<Link to="/cart">
 					<div className="header__cart">
 
 						<Button className="button--cart">
@@ -68,8 +67,7 @@ function Header(props) {
 const mapStateToProps = state => {
 	return {
 		totalPrice: state.cart.totalPrice,
-		totalCount: state.cart.totalCount,
-		state: state
+		totalCount: state.cart.totalCount
 	}
 }
 

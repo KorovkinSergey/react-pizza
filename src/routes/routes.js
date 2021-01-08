@@ -29,7 +29,6 @@ routes.forEach((route) => {
 	}
 })
 
-
 export default routes
 
 export {routesMap}

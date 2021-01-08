@@ -1,49 +1,42 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {setCategory} from '../redux/actions/filters'
 import {connect} from 'react-redux'
 
-const Categories = React.memo(({ categoryNames , activeCategory, setCategory }) => {
+function Categories(props) {
 
-  return (
-    <div className="categories">
-      <ul>
-        <li
-          className={activeCategory === null ? 'active' : ''}
-          onClick={() => setCategory(null)}>
-          Все
-        </li>
-        {categoryNames &&
-        categoryNames.map((name, index) => (
-            <li
-              className={activeCategory === index ? 'active' : ''}
-              onClick={() => setCategory(index)}
-              key={`${name}_${index}`}>
-              {name}
-            </li>
-          ))}
-      </ul>
-    </div>
-  )
-})
-
-Categories.propTypes = {
-  categoryNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+	return (
+		<div className="categories">
+			<ul>
+				<li
+					className={props.activeCategory === null ? 'active' : ''}
+					onClick={() => props.setCategory(null)}>
+					Все
+				</li>
+				{props.categoryNames &&
+				props.categoryNames.map((name, index) => (
+					<li
+						className={props.activeCategory === index ? 'active' : ''}
+						onClick={() => props.setCategory(index)}
+						key={`${name}_${index}`}>
+						{name}
+					</li>
+				))}
+			</ul>
+		</div>
+	)
 }
 
-Categories.defaultProps = { activeCategory: null, items: [] }
-
 const mapStateToProps = state => {
-  return {
-    categoryNames :state.filters.categoryNames,
-    activeCategory :state.filters.category,
-  }
+	return {
+		categoryNames: state.filters.categoryNames,
+		activeCategory: state.filters.category,
+	}
 }
 
 const dispatchToProps = dispatch => {
-  return {
-    setCategory: index => dispatch (setCategory(index)),
-  }
+	return {
+		setCategory: index => dispatch(setCategory(index)),
+	}
 }
 
 export default connect(mapStateToProps, dispatchToProps)(Categories)

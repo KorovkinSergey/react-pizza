@@ -1,30 +1,26 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import cartEmptyImage from '../assets/img/empty-cart.png'
-import { CartItem, Button } from '../components'
+import {CartItem, Button} from '../components'
 import {connect} from 'react-redux'
+import {clearCart} from '../redux/actions/cart'
 
-function Cart( { clearCart, removeCartItem, plusCartItem, minusCartItem, totalPrice, totalCount, items} ) {
-
-	const addedPizzas = Object.keys(items).map((key) => {
-		return items[key].items[0]
-	})
+function Cart(props) {
 
 	const onClearCart = () => {
-		if (window.confirm('Вы действительно хотите очистить корзину?')) { clearCart() }
-	}
-
-	const onRemoveItem = (id) => {
-		if (window.confirm('Вы действительно хотите удалить?')) { removeCartItem(id) }
+		if (window.confirm('Вы действительно хотите очистить корзину?')) {
+			props.clearCart()
+		}
 	}
 
 	const onClickOrder = () => {
-		console.log('ВАШ ЗАКАЗ', items)
+		console.log('ВАШ ЗАКАЗ', props.items)
+		props.clearCart()
 	}
 
 	return (
 		<div className="container container--cart">
-			{totalCount ? (
+			{props.totalCount ? (
 				<div className="cart">
 					<div className="cart__top">
 						<h2 className="content__title">
@@ -99,30 +95,19 @@ function Cart( { clearCart, removeCartItem, plusCartItem, minusCartItem, totalPr
 						</div>
 					</div>
 					<div className="content__items">
-						{addedPizzas.map((obj) => (
-							<CartItem
-								key={obj.id}
-								id={obj.id}
-								name={obj.name}
-								type={obj.type}
-								size={obj.size}
-								totalPrice={items[obj.id].totalPrice}
-								totalCount={items[obj.id].items.length}
-
-							/>
-						))}
+						{props.items.map((item, index) => <CartItem key={index} item={item}/>)}
 					</div>
 					<div className="cart__bottom">
 						<div className="cart__bottom-details">
               <span>
-                Всего пицц: <b>{totalCount} шт.</b>
+                Всего пицц: <b>{props.totalCount} шт.</b>
               </span>
 							<span>
-                Сумма заказа: <b>{totalPrice} ₽</b>
+                Сумма заказа: <b>{props.totalPrice} ₽</b>
               </span>
 						</div>
 						<div className="cart__bottom-buttons">
-							<a href="/" className="button button--outline button--add go-back-btn">
+							<Link to="/" className="button button--outline button--add go-back-btn">
 								<svg
 									width="8"
 									height="14"
@@ -137,10 +122,8 @@ function Cart( { clearCart, removeCartItem, plusCartItem, minusCartItem, totalPr
 										strokeLinejoin="round"
 									/>
 								</svg>
-								<Link to="/">
-									<span>Вернуться назад</span>
-								</Link>
-							</a>
+								<span>Вернуться назад</span>
+							</Link>
 							<Button onClick={onClickOrder} className="pay-btn">
 								<span>Оплатить сейчас</span>
 							</Button>
@@ -154,10 +137,10 @@ function Cart( { clearCart, removeCartItem, plusCartItem, minusCartItem, totalPr
 					</h2>
 					<p>
 						Вероятней всего, вы не заказывали ещё пиццу.
-						<br />
+						<br/>
 						Для того, чтобы заказать пиццу, перейди на главную страницу.
 					</p>
-					<img src={cartEmptyImage} alt="Empty cart" />
+					<img src={cartEmptyImage} alt="Empty cart"/>
 					<Link to="/" className="button button--black">
 						<span>Вернуться назад</span>
 					</Link>
@@ -170,7 +153,7 @@ function Cart( { clearCart, removeCartItem, plusCartItem, minusCartItem, totalPr
 
 const mapStateToProps = state => {
 	return {
-		totalPrice:state.cart.totalPrice,
+		totalPrice: state.cart.totalPrice,
 		totalCount: state.cart.totalCount,
 		items: state.cart.items
 	}
@@ -178,9 +161,9 @@ const mapStateToProps = state => {
 
 const dispatchToProps = dispatch => {
 	return {
-
+		clearCart: () => dispatch(clearCart())
 	}
 }
 
 
-export default connect(mapStateToProps, null)(Cart)
+export default connect(mapStateToProps, dispatchToProps)(Cart)

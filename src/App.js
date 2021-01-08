@@ -2,9 +2,13 @@ import React from 'react'
 import {Header} from './components'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import routes from './routes/routes'
+import {fetchBasePizza} from './redux/actions/pizzas'
+import {connect} from 'react-redux'
 
 
-function App() {
+function App(props) {
+
+	props.fetchBasePizza()
 
 	const routesComponents = routes.map((route) => {
 		return <Route path={route.url}
@@ -28,4 +32,10 @@ function App() {
 	)
 }
 
-export default App
+const dispatchToProps = dispatch => {
+	return {
+		fetchBasePizza: () => dispatch(fetchBasePizza())
+	}
+}
+
+export default connect(null, dispatchToProps)(App)

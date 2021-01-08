@@ -1,18 +1,12 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {setSortBy} from '../redux/actions/filters'
 
-
-const SortPopup = React.memo(({ activeSortType, items, setSortBy }) => {
+function SortPopup(props) {
 
 	const [visiblePopup, setVisiblePopup] = React.useState(false)
 	const sortRef = React.useRef()
-	const activeLabel = items.find((obj) => obj.type === activeSortType).name
-
-	const toggleVisiblePopup = () => {
-		setVisiblePopup(!visiblePopup)
-	}
+	const activeLabel = props.items.find((obj) => obj.type === props.activeSortType).name
 
 	const handleOutsideClick = (event) => {
 		const path = event.path || (event.composedPath && event.composedPath())
@@ -21,11 +15,10 @@ const SortPopup = React.memo(({ activeSortType, items, setSortBy }) => {
 		}
 	}
 
-	const onSelectSortType = React.useCallback((type) => {
-		setSortBy(type)
+	const onSelectSortType = type => {
+		props.setSortBy(type)
 		setVisiblePopup(false)
-	}, [])
-
+	}
 
 	React.useEffect(() => {
 		document.body.addEventListener('click', handleOutsideClick)
@@ -47,16 +40,16 @@ const SortPopup = React.memo(({ activeSortType, items, setSortBy }) => {
 					/>
 				</svg>
 				<b>Сортировка по:</b>
-				<span onClick={toggleVisiblePopup}>{activeLabel}</span>
+				<span onClick={() => setVisiblePopup(!visiblePopup)}>{activeLabel}</span>
 			</div>
 			{visiblePopup && (
 				<div className="sort__popup">
 					<ul>
-						{items &&
-						items.map((obj, index) => (
+						{props.items &&
+						props.items.map((obj, index) => (
 							<li
-								onClick={() => onSelectSortType(obj)}
-								className={activeSortType === obj.type ? 'active' : ''}
+								onClick={() => onSelectSortType(obj.type)}
+								className={props.activeSortType === obj.type ? 'active' : ''}
 								key={`${obj.type}_${index}`}>
 								{obj.name}
 							</li>
@@ -66,23 +59,13 @@ const SortPopup = React.memo(({ activeSortType, items, setSortBy }) => {
 			)}
 		</div>
 	)
-})
-
-SortPopup.propTypes = {
-	activeSortType: PropTypes.string.isRequired,
-	items: PropTypes.arrayOf(PropTypes.object).isRequired,
-	setSortBy: PropTypes.func.isRequired,
-}
-
-SortPopup.defaultProps = {
-	items: [],
 }
 
 
 const mapStateToProps = state => {
 	return {
 		items: state.filters.sortItems,
-		activeSortType: state.filters.sortBy.type
+		activeSortType: state.filters.sortBy
 	}
 }
 
